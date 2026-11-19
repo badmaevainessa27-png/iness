@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Приют «Добрые лапы»</title>
+<style>
+:root{
+  --main:#e67e22; --main-hover:#cf711b;
+  --accent:#27ae60; --accent-hover:#1e8449;
+  --bg:#fdf6f0; --surface:#ffffff;
+  --text:#2c3e50; --text-muted:#666;
+  --header-bg:#2c3e50; --header-text:#ffffff;
+  --border:#dddddd;
+  --shadow:rgba(0,0,0,.08); --shadow-hover:rgba(0,0,0,.14);
+  --hero-grad:linear-gradient(135deg,#fff5e9,#ffe4cc);
+  --vol-bg:#2c3e50; --vol-text:#ffffff;
+  --a11y-bg:#1a252f; --a11y-text:#ffffff;
+  --a11y-btn-bg:#5f86ad; --a11y-btn-hover:#e67e22;
+  --font-scale:1;
+}
+[data-theme="dark"]{
+  --bg:#121a22; --surface:#1e2a36;
+  --text:#e6edf3; --text-muted:#9fb0c0;
+  --header-bg:#0d141a; --header-text:#e6edf3;
+  --border:#33475c;
+  --shadow:rgba(0,0,0,.35); --shadow-hover:rgba(0,0,0,.5);
+  --hero-grad:linear-gradient(135deg,#1a2530,#243444);
+  --vol-bg:#0d141a; --vol-text:#e6edf3;
+  --a11y-bg:#000000; --a11y-text:#e6edf3;
+  --a11y-btn-bg:#243444;
+}
+[data-contrast="on"]{
+  --main:#ffcc00; --main-hover:#ffe066;
+  --accent:#00ff88; --accent-hover:#66ffbb;
+  --bg:#000000; --surface:#000000;
+  --text:#ffffff; --text-muted:#ffffff;
+  --header-bg:#000000; --header-text:#ffffff;
+  --border:#ffffff;
+  --shadow:rgba(255,255,255,.25); --shadow-hover:rgba(255,255,255,.4);
+  --hero-grad:#000000;
+  --vol-bg:#000000; --vol-text:#ffffff;
+  --a11y-bg:#000000; --a11y-text:#ffffff;
+  --a11y-btn-bg:#000000; --a11y-btn-hover:#ffcc00;
+}
+[data-contrast="on"] *{box-shadow:none !important;}
+[data-contrast="on"] .btn,[data-contrast="on"] .a11y-btn,
+[data-contrast="on"] input,[data-contrast="on"] textarea,[data-contrast="on"] select{border:2px solid #fff !important;}
+[data-contrast="on"] .btn{color:#000 !important;font-weight:800;}
+[data-contrast="on"] .btn.green{color:#000 !important;background:#00ff88 !important;}
+[data-contrast="on"] a{color:#ffcc00 !important;text-decoration:underline;}
+[data-contrast="on"] .card,[data-contrast="on"] .vol-option,
+[data-contrast="on"] .form-box,[data-contrast="on"] .modal{border:2px solid #fff !important;}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:calc(16px * var(--font-scale));scroll-behavior:smooth;}
+body{font-family:'Segoe UI',Tahoma,sans-serif;color:var(--text);background:var(--bg);line-height:1.6;transition:background .3s,color .3s;}
+
+.a11y-bar{position:sticky;top:0;z-index:200;background:var(--a11y-bg);color:var(--a11y-text);padding:.5rem 1rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;justify-content:flex-end;border-bottom:1px solid rgba(255,255,255,.15);}
+.a11y-label{font-size:.85rem;font-weight:600;margin-right:auto;opacity:.9;}
+.a11y-btn{background:var(--a11y-btn-bg);color:var(--a11y-text);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:.45rem .85rem;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;font-family:inherit;min-width:44px;}
+.a11y-btn:hover,.a11y-btn:focus-visible{background:var(--a11y-btn-hover);color:#000;outline:2px solid #fff;outline-offset:2px;}
+.a11y-btn[aria-pressed="true"]{background:var(--main);color:#000;}
+
+header{background:var(--header-bg);color:var(--header-text);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;position:sticky;top:52px;z-index:100;transition:background .3s;}
+.logo{font-size:1.5rem;font-weight:700;}
+.logo span{color:var(--main);}
+nav a{color:var(--header-text);text-decoration:none;margin-left:1.5rem;font-weight:500;transition:.2s;}
+nav a:hover{color:var(--main);}
+
+.hero{text-align:center;padding:4rem 1rem 3rem;background:var(--hero-grad);}
+.hero h1{font-size:2.5rem;margin-bottom:1rem;}
+.hero p{font-size:1.15rem;max-width:600px;margin:0 auto 1.5rem;}
+
+.btn{display:inline-block;background:var(--main);color:#fff;padding:.8rem 2rem;border-radius:50px;text-decoration:none;font-weight:600;border:none;cursor:pointer;transition:.25s;font-size:1rem;font-family:inherit;}
+.btn:hover{background:var(--main-hover);transform:translateY(-2px);}
+.btn.green{background:var(--accent);}
+.btn.green:hover{background:var(--accent-hover);}
+
+section{padding:3rem 1rem;max-width:1200px;margin:0 auto;}
+.section-title{text-align:center;font-size:2rem;margin-bottom:.5rem;}
+.section-sub{text-align:center;color:var(--text-muted);margin-bottom:2.5rem;}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.8rem;}
+.card{background:var(--surface);border-radius:18px;overflow:hidden;box-shadow:0 6px 18px var(--shadow);transition:.3s;cursor:pointer;display:flex;flex-direction:column;}
+.card:hover{transform:translateY(-6px);box-shadow:0 14px 28px var(--shadow-hover);}
+.card img{width:100%;height:200px;object-fit:cover;display:block;}
+.card-body{padding:1rem 1.2rem 1.3rem;flex:1;display:flex;flex-direction:column;}
+.card-body h3{font-size:1.25rem;margin-bottom:.3rem;}
+.card-body .meta{color:var(--text-muted);font-size:.9rem;margin-bottom:.6rem;}
+.card-body p{font-size:.95rem;flex:1;}
+.card-body .more{margin-top:.9rem;color:var(--main);font-weight:600;font-size:.95rem;align-self:flex-start;}
+
+.volunteer{background:var(--vol-bg);color:var(--vol-text);border-radius:24px;padding:3rem 2rem;margin-top:2rem;}
+.volunteer h2{text-align:center;}
+.volunteer .section-sub{color:var(--vol-text);opacity:.8;}
+.vol-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.5rem;margin-top:2rem;}
+.vol-option{background:rgba(128,128,128,.15);border:1px solid rgba(128,128,128,.3);border-radius:16px;padding:1.5rem;text-align:center;}
+.vol-option .icon{font-size:2.2rem;margin-bottom:.6rem;display:block;}
+.vol-option h3{font-size:1.1rem;margin-bottom:.5rem;}
+.vol-option p{font-size:.9rem;opacity:.85;}
+.vol-cta{text-align:center;margin-top:2rem;}
+
+.form-box{background:var(--surface);border-radius:24px;padding:2.5rem 2rem;max-width:700px;margin:0 auto;box-shadow:0 8px 26px var(--shadow);}
+.form-box form,.adopt-form-box form{display:grid;gap:1rem;}
+.form-box label,.adopt-form-box label{font-weight:600;font-size:.95rem;}
+input,textarea,select{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;background:var(--surface);color:var(--text);}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--main);}
+textarea{min-height:100px;resize:vertical;}
+.hint{font-size:.8rem;color:var(--text-muted);}
+.success-msg{margin-top:1rem;font-weight:600;color:var(--accent);display:none;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;justify-content:center;align-items:center;padding:1rem;z-index:1000;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--surface);border-radius:22px;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;position:relative;color:var(--text);}
+.modal img{width:100%;height:280px;object-fit:cover;border-radius:22px 22px 0 0;}
+.modal-body{padding:1.8rem 2rem 2.2rem;}
+.modal-body h2{font-size:1.7rem;margin-bottom:.4rem;}
+.modal-body .tagline{color:var(--text-muted);margin-bottom:1rem;}
+.modal-body ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.2rem;}
+.modal-body ul li{font-size:.95rem;}
+.modal-body ul li strong{color:var(--main);}
+.modal-body p.desc{margin-bottom:1.5rem;}
+.close-btn{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.55);color:#fff;border:none;width:38px;height:38px;border-radius:50%;font-size:1.3rem;cursor:pointer;}
+.adopt-form-box{display:none;margin-top:1.5rem;}
+
+footer{background:var(--header-bg);color:var(--header-text);text-align:center;padding:2rem 1rem;margin-top:3rem;font-size:.95rem;}
+footer a{color:var(--main);text-decoration:none;}
+
+@media(max-width:600px){
+  .modal-body ul{grid-template-columns:1fr;}
+  .hero h1{font-size:1.8rem;}
+  header{top:96px;}
+  .a11y-label{width:100%;margin-bottom:.3rem;}
+  .a11y-bar{justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="a11y-bar" role="toolbar" aria-label="Настройки доступности">
+  <span class="a11y-label">Доступность:</span>
+  <button id="fontMinus" class="a11y-btn" title="Уменьшить шрифт">A−</button>
+  <button id="fontReset" class="a11y-btn" title="Сбросить шрифт">A</button>
+  <button id="fontPlus" class="a11y-btn" title="Увеличить шрифт">A+</button>
+  <button id="themeToggle" class="a11y-btn" title="Тёмная/светлая тема">🌙 Тема</button>
+  <button id="contrastToggle" class="a11y-btn" aria-pressed="false" title="Контрастный режим">◐ Контраст</button>
+  <button id="speakToggle" class="a11y-btn" aria-pressed="false" title="Озвучить страницу">🔊 Озвучить</button>
+</div>
+
+<header>
+  <div class="logo">🐾 Приют <span>«Добрые лапы»</span></div>
+  <nav>
+    <a href="#animals">Питомцы</a>
+    <a href="#volunteer">Волонтёрство</a>
+    <a href="#help">Помощь</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Подари дом — подари жизнь</h1>
+  <p>Мы заботимся о бездомных животных и ищем для каждого любящую семью.</p>
+  <a href="#animals" class="btn">Наши питомцы</a>
+  <a href="#volunteer" class="btn green">Стать волонтёром</a>
+</section>
+
+<section id="animals">
+  <h2 class="section-title">Наши питомцы</h2>
+  <p class="section-sub">Нажмите на карточку, чтобы узнать подробности и заполнить анкету</p>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section id="volunteer">
+  <div class="volunteer">
+    <h2 class="section-title">Волонтёрство</h2>
+    <p class="section-sub">Каждая пара рук важна. Присоединяйтесь!</p>
+    <div class="vol-options">
+      <div class="vol-option"><span class="icon">🚶</span><h3>Прогулки с собаками</h3><p>Помогите питомцам социализироваться — просто гуляйте с ними.</p></div>
+      <div class="vol-option"><span class="icon">🧹</span><h3>Уборка и уход</h3><p>Уборка вольеров, кормление, помощь сотрудникам приюта.</p></div>
+      <div class="vol-option"><span class="icon">🚗</span><h3>Транспорт</h3><p>Помощь с перевозкой животных к ветеринару и новым хозяевам.</p></div>
+      <div class="vol-option"><span class="icon">📸</span><h3>Фото и соцсети</h3><p>Фотосессии питомцев и ведение социальных сетей приюта.</p></div>
+    </div>
+    <div class="vol-cta"><a href="#help" class="btn green">Хочу помочь</a></div>
+  </div>
+</section>
+
+<section id="help">
+  <h2 class="section-title">Помощь приюту</h2>
+  <p class="section-sub">Заполните анкету — и мы свяжемся с вами</p>
+  <div class="form-box">
+    <form id="volunteerForm">
+      <div><label for="vname">Ваше имя</label><input type="text" id="vname" required placeholder="Иван Иванов"></div>
+      <div><label for="vphone">Телефон</label><input type="tel" id="vphone" required placeholder="+7 900 000-00-00"></div>
+      <div><label for="vtype">Чем хотите помочь?</label>
+        <select id="vtype">
+          <option>Прогулки с собаками</option>
+          <option>Уборка и уход</option>
+          <option>Транспорт</option>
+          <option>Фото и соцсети</option>
+          <option>Материальная помощь</option>
+        </select>
+      </div>
+      <div><label for="vmsg">Комментарий</label><textarea id="vmsg" placeholder="Расскажите о себе (необязательно)"></textarea></div>
+      <button type="submit" class="btn">Отправить заявку</button>
+    </form>
+    <div id="formMsg" class="success-msg">✅ Спасибо! Мы свяжемся с вами в ближайшее время.</div>
+  </div>
+</section>
+
+<footer>© 2024 Приют «Добрые лапы». Помогите нам спасать жизни. <a href="#">Наверх ↑</a></footer>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="close-btn" id="closeModal" aria-label="Закрыть">✕</button>
+    <img id="modalImg" src="" alt="">
+    <div class="modal-body">
+      <h2 id="modalTitle"></h2>
+      <p class="tagline" id="modalTag"></p>
+      <ul id="modalFacts"></ul>
+      <p class="desc" id="modalDesc"></p>
+      <button class="btn green" id="adoptBtn">Заполнить анкету на усыновление</button>
+      <div id="adoptFormBox" class="adopt-form-box">
+        <form id="adoptForm">
+          <label for="aname">Ваше имя</label><input type="text" id="aname" required>
+          <label for="aphone">Телефон</label><input type="tel" id="aphone" required>
+          <label for="amsg">Почему вы хотите взять питомца?</label><textarea id="amsg" required></textarea>
+          <button type="submit" class="btn">Отправить анкету</button>
+        </form>
+        <div id="adoptMsg" class="success-msg">✅ Анкета отправлена! Мы скоро свяжемся с вами.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ ДАННЫЕ ============ */
+const animals = [
+  {id:1,name:"Лаки",species:"Собака",breed:"Метис",age:"2 года",gender:"Мальчик",size:"Средний",img:"https://images.unsplash.com/photo-1558788353-f76d92427f16?w=800&q=80",tag:"Ласковый и игривый",desc:"Лаки попал к нам полгода назад. Он очень дружелюбный, обожает детей и других собак. Знает команду «сидеть», приучен к поводку."},
+  {id:2,name:"Мурка",species:"Кошка",breed:"Домашняя",age:"1 год",gender:"Девочка",size:"Мини",img:"https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&q=80",tag:"Тихая и ласковая",desc:"Мурка — нежная и спокойная кошечка. Любит сидеть на коленях и мурлыкать. Приучена к лотку."},
+  {id:3,name:"Рекс",species:"Собака",breed:"Овчарка",age:"4 года",gender:"Мальчик",size:"Крупный",img:"https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=800&q=80",tag:"Умный и преданный",desc:"Рекс — настоящий защитник. Отлично слушается команд, не агрессивен к людям. Идеален для частного дома."},
+  {id:4,name:"Барсик",species:"Кошка",breed:"Британская",age:"3 года",gender:"Мальчик",size:"Мини",img:"https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&q=80",tag:"Важный и спокойный",desc:"Барсик — настоящий джентльмен. Спокойный, чистоплотный, любит спать на подоконнике."},
+  {id:5,name:"Белла",species:"Собака",breed:"Лабрадор",age:"1.5 года",gender:"Девочка",size:"Средний",img:"https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80",tag:"Энергичная и добрая",desc:"Белла — молодая и жизнерадостная собака. Обожает бегать, играть с мячом и плавать."},
+  {id:6,name:"Пушок",species:"Кошка",breed:"Персидская",age:"5 лет",gender:"Мальчик",size:"Мини",img:"https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&q=80",tag:"Мягкий и уютный",desc:"Пушок — пушистый и ласковый кот. Любит расчёсывания и внимание."}
+];
+
+/* ============ НАСТРОЙКИ ============ */
+const htmlEl = document.documentElement;
+const FONT_STEP = 0.15, FONT_MIN = 0.75, FONT_MAX = 1.9;
+
+function loadSettings(){
+  const s = parseFloat(localStorage.getItem('a11y-font-scale'));
+  const t = localStorage.getItem('a11y-theme');
+  const c = localStorage.getItem('a11y-contrast');
+  if(!isNaN(s)) htmlEl.style.setProperty('--font-scale', s);
+  if(t === 'dark') htmlEl.setAttribute('data-theme','dark');
+  if(c === 'on'){
+    htmlEl.setAttribute('data-contrast','on');
+    document.getElementById('contrastToggle').setAttribute('aria-pressed','true');
+  }
+  updateThemeLabel();
+}
+function getFontScale(){
+  const v = parseFloat(getComputedStyle(htmlEl).getPropertyValue('--font-scale'));
+  return isNaN(v) ? 1 : v;
+}
+function setFontScale(v){
+  v = Math.min(FONT_MAX, Math.max(FONT_MIN, v));
+  htmlEl.style.setProperty('--font-scale', v);
+  localStorage.setItem('a11y-font-scale', v);
+}
+document.getElementById('fontPlus').addEventListener('click', () => setFontScale(getFontScale()+FONT_STEP));
+document.getElementById('fontMinus').addEventListener('click', () => setFontScale(getFontScale()-FONT_STEP));
+document.getElementById('fontReset').addEventListener('click', () => setFontScale(1));
+
+const themeToggle = document.getElementById('themeToggle');
+function updateThemeLabel(){
+  themeToggle.textContent = htmlEl.getAttribute('data-theme')==='dark' ? '☀️ Тема' : '🌙 Тема';
+}
+themeToggle.addEventListener('click', () => {
+  if(htmlEl.getAttribute('data-theme')==='dark'){
+    htmlEl.removeAttribute('data-theme');
+    localStorage.setItem('a11y-theme','light');
+  } else {
+    htmlEl.setAttribute('data-theme','dark');
+    localStorage.setItem('a11y-theme','dark');
+  }
+  updateThemeLabel();
+});
+
+const contrastToggle = document.getElementById('contrastToggle');
+contrastToggle.addEventListener('click', () => {
+  if(htmlEl.getAttribute('data-contrast')==='on'){
+    htmlEl.removeAttribute('data-contrast');
+    contrastToggle.setAttribute('aria-pressed','false');
+    localStorage.setItem('a11y-contrast','off');
+  } else {
+    htmlEl.setAttribute('data-contrast','on');
+    contrastToggle.setAttribute('aria-pressed','true');
+    localStorage.setItem('a11y-contrast','on');
+  }
+});
+
+loadSettings();
+
+/* ============ ОЗВУЧИВАНИЕ ============ */
+const speakToggle = document.getElementById('speakToggle');
+let isSpeaking = false;
+
+if (!('speechSynthesis' in window)) {
+  speakToggle.disabled = true;
+  speakToggle.textContent = '🔇 Нет';
+  speakToggle.title = 'Ваш браузер не поддерживает озвучивание';
+}
+
+function getPageText() {
+  // Собираем заголовки, подписи, кнопки и ключевые параграфы
+  const parts = [];
+  const sel = 'h1, h2, h3, nav a, .a11y-label, .hero p, .section-sub, .card-body h3, .card-body .meta, .card-body p, .vol-option h3, .vol-option p, footer';
+  document.querySelectorAll(sel).forEach(n => {
+    const t = n.innerText.trim();
+    if (t) parts.push(t);
+  });
+  return 'Добро пожаловать на сайт приюта Добрые лапы. ' + parts.join('. ');
+}
+
+function stopSpeaking(){
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  isSpeaking = false;
+  speakToggle.textContent = '🔊 Озвучить';
+  speakToggle.setAttribute('aria-pressed','false');
+}
+
+function startSpeaking(){
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  const text = getPageText();
+  if (!text) return;
+
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ru-RU';
+  u.rate = 0.95;
+  u.pitch = 1;
+
+  // Пытаемся выбрать русский голос, если доступен
+  const voices = window.speechSynthesis.getVoices();
+  const ru = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ru'));
+  if (ru) u.voice = ru;
+
+  u.onend = stopSpeaking;
+  u.onerror = stopSpeaking;
+
+  window.speechSynthesis.speak(u);
+  isSpeaking = true;
+  speakToggle.textContent = '⏹ Остановить';
+  speakToggle.setAttribute('aria-pressed','true');
+}
+
+speakToggle.addEventListener('click', () => {
+  if (isSpeaking) stopSpeaking();
+  else startSpeaking();
+});
+
+// Останавливаем озвучку при клике по навигации и основным кнопкам
+document.querySelectorAll('nav a, .btn').forEach(el => {
+  el.addEventListener('click', () => { if (isSpeaking) stopSpeaking(); });
+});
+
+// Подгружаем голоса (в некоторых браузерах они приходят асинхронно)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+}
+
+/* ============ КАРТОЧКИ ============ */
+const cardsBox = document.getElementById('cards');
+animals.forEach(a => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.tabIndex = 0;
+  card.setAttribute('role','button');
+  card.setAttribute('aria-label', `Открыть анкету: ${a.name}, ${a.species}, ${a.age}`);
+  card.innerHTML = `
+    <img src="${a.img}" alt="${a.name} — ${a.species}, ${a.breed}">
+    <div class="card-body">
+      <h3>${a.name}</h3>
+      <div class="meta">${a.species} · ${a.breed} · ${a.age}</div>
+      <p>${a.tag}</p>
+      <span class="more">Подробнее →</span>
+    </div>`;
+  card.addEventListener('click', () => openModal(a));
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(a); }
+  });
+  cardsBox.appendChild(card);
+});
+
+/* ============ МОДАЛЬНОЕ ОКНО ============ */
+const overlay = document.getElementById('modalOverlay');
+const closeBtn = document.getElementById('closeModal');
+const adoptBtn = document.getElementById('adoptBtn');
+const adoptFormBox = document.getElementById('adoptFormBox');
+const adoptForm = document.getElementById('adoptForm');
+const adoptMsg = document.getElementById('adoptMsg');
+let lastFocused = null;
+
+function openModal(a){
+  lastFocused = document.activeElement;
+  document.getElementById('modalImg').src = a.img;
+  document.getElementById('modalImg').alt = `${a.name} — ${a.species}, ${a.breed}`;
+  document.getElementById('modalTitle').textContent = a.name;
+  document.getElementById('modalTag').textContent = a.tag;
+  document.getElementById('modalDesc').textContent = a.desc;
+  document.getElementById('modalFacts').innerHTML = `
+    <li><strong>Вид:</strong> ${a.species}</li>
+    <li><strong>Порода:</strong> ${a.breed}</li>
+    <li><strong>Возраст:</strong> ${a.age}</li>
+    <li><strong>Пол:</strong> ${a.gender}</li>
+    <li><strong>Размер:</strong> ${a.size}</li>
+    <li><strong>ID:</strong> #${String(a.id).padStart(3,'0')}</li>`;
+  adoptFormBox.style.display = 'none';
+  adoptForm.reset();
+  adoptForm.style.display = 'grid';
+  adoptMsg.style.display = 'none';
+  adoptBtn.style.display = 'inline-block';
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  closeBtn.focus();
+}
+function closeModal(){
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  if(lastFocused) lastFocused.focus();
+}
+closeBtn.addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+});
+
+/* ============ АНКЕТА УСЫНОВЛЕНИЯ ============ */
+adoptBtn.addEventListener('click', () => {
+  adoptFormBox.style.display = 'block';
+  adoptBtn.style.display = 'none';
+  adoptFormBox.scrollIntoView({behavior:'smooth', block:'nearest'});
+  document.getElementById('aname').focus();
+});
+adoptForm.addEventListener('submit', e => {
+  e.preventDefault();
+  adoptForm.style.display = 'none';
+  adoptMsg.style.display = 'block';
+});
+
+/* ============ ФОРМА ВОЛОНТЁРА ============ */
+const volunteerForm = document.getElementById('volunteerForm');
+const formMsg = document.getElementById('formMsg');
+volunteerForm.addEventListener('submit', e => {
+  e.preventDefault();
+  formMsg.style.display = 'block';
+  e.target.reset();
+});
+
+/* ============ ПЛАВНЫЙ СКРОЛЛ ============ */
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const id = link.getAttribute('href');
+    if(id === '#') return;
+    const el = document.querySelector(id);
+    if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+</script>
+</body>
+</html>
